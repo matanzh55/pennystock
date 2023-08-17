@@ -2,8 +2,8 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "networkSecurityGroups_nsg_pennystock_dev_westuk_WebNSG_name": {
-            "defaultValue": "nsg-pennystock-dev-westuk-WebNSG",
+        "networkSecurityGroups_nsg_pennystock_dev_westuk_DBNSG_name": {
+            "defaultValue": "nsg-pennystock-dev-westuk-DBNSG",
             "type": "String"
         }
     },
@@ -12,28 +12,25 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2023-04-01",
-            "name": "[parameters('networkSecurityGroups_nsg_pennystock_dev_westuk_WebNSG_name')]",
+            "name": "[parameters('networkSecurityGroups_nsg_pennystock_dev_westuk_DBNSG_name')]",
             "location": "ukwest",
             "properties": {
                 "securityRules": [
                     {
-                        "name": "WebRule",
-                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_pennystock_dev_westuk_WebNSG_name'), 'WebRule')]",
+                        "name": "PostgreSQLRule",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_pennystock_dev_westuk_DBNSG_name'), 'PostgreSQLRule')]",
                         "type": "Microsoft.Network/networkSecurityGroups/securityRules",
                         "properties": {
                             "protocol": "TCP",
                             "sourcePortRange": "*",
-                            "sourceAddressPrefix": "*",
+                            "destinationPortRange": "5432",
+                            "sourceAddressPrefix": "46.121.12.103",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 100,
                             "direction": "Inbound",
                             "sourcePortRanges": [],
-                            "destinationPortRanges": [
-                                "80",
-                                "8080",
-                                "5000"
-                            ],
+                            "destinationPortRanges": [],
                             "sourceAddressPrefixes": [],
                             "destinationAddressPrefixes": []
                         }
@@ -44,24 +41,21 @@
         {
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
             "apiVersion": "2023-04-01",
-            "name": "[concat(parameters('networkSecurityGroups_nsg_pennystock_dev_westuk_WebNSG_name'), '/WebRule')]",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_pennystock_dev_westuk_DBNSG_name'), '/PostgreSQLRule')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_pennystock_dev_westuk_WebNSG_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_pennystock_dev_westuk_DBNSG_name'))]"
             ],
             "properties": {
                 "protocol": "TCP",
                 "sourcePortRange": "*",
-                "sourceAddressPrefix": "*",
+                "destinationPortRange": "5432",
+                "sourceAddressPrefix": "46.121.12.103",
                 "destinationAddressPrefix": "*",
                 "access": "Allow",
                 "priority": 100,
                 "direction": "Inbound",
                 "sourcePortRanges": [],
-                "destinationPortRanges": [
-                    "80",
-                    "8080",
-                    "5000"
-                ],
+                "destinationPortRanges": [],
                 "sourceAddressPrefixes": [],
                 "destinationAddressPrefixes": []
             }
